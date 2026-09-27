@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -17,51 +18,48 @@ int main( int argc, char * argv[] )
 
 	double arguments [3];
 
-	if (argc > 1)
+	while ( i < argc )
 	{
-		while ( i < argc )
+		try
 		{
-
-			try
-			{
-				arguments[i-1] = stod(argv[i]);
-			}
-			catch(const std::invalid_argument&)
-			{
-				if(i==1)
-					cout << "(Invalid loan amount): " << argv[i] << endl;
-				else if (i==2)
-					cout << "(Invalid interest rate): " << argv[i-1] << " " << argv[i] << endl;
-				else
-					cout << "(Invalid payment): " << argv[i-2] << " " << argv[i-1] << " " << argv[i] << endl;
-				return -2;
-			}
-			i++;
+			arguments[i-1] = stod(argv[i]);
 		}
+		catch(const std::invalid_argument&)
+		{
+			if(i==1)
+				cout << "(Invalid loan amount): " << argv[i] << endl;
+			else if (i==2)
+				cout << "(Invalid interest rate): " << argv[i-1] << " " << argv[i] << endl;
+			else
+				cout << "(Invalid payment): " << argv[i-2] << " " << argv[i-1] << " " << argv[i] << endl;
+			return -2;
+		}
+		i++;
 	}
 
 	loan_amount = arguments[0];
 	yearly_interest_rate = arguments[1];
 	monthly_payment = arguments[2]; 
+
+	// Calculations and Table
 	
-
-
-	double monthly_interest_rate = yearly_interest_rate / 12;
-	double interestCalc = monthly_interest_rate / 100;
-
+	double monthly_interest_rate = yearly_interest_rate / 12.0;
+	double interestCalc = monthly_interest_rate / 100.0;
 	int currentMonth = 0;
-	double principal, monthlypaid;
-	double totalInterest = 0;
+	double totalInterest = 0.0;
 	
-
-	if(monthly_payment <= loan_amount * interestCalc)
-	{
-		cout << "(Insufficient payment): "
-			<< argv[1] << " " << argv[2] << " " << argv[3] << endl;
+	//Check monthly payment
+	if(monthly_payment <= loan_amount * interestCalc) {
+		cout << "Error: Monthly payment must be greater than the monthly interest." << endl;
 		return -3;
  	}
 
-	
+	// Currency Formatting
+    cout.setf(ios::fixed);
+    cout.setf(ios::showpoint);
+    cout.precision(2);
+
+	//Header
 	cout << "****************************************************\n"
 	     << "\tAmortization Table\n"
 		 << "****************************************************\n"
@@ -71,53 +69,39 @@ int main( int argc, char * argv[] )
 		if (currentMonth == 0) 
 		{
 			cout << currentMonth++ << "\t$" << loan_amount;
-
-			if (loan_amount < 1000) 
-				cout <<"\t";
-
-			cout << "\t" << "N/A\tN/A\tN/A\tN/A\tN/A\n";
+			if (loan_amount < 1000) cout <<"\t";
+			cout << "\tN/A\tN/A\tN/A\tN/A\n";
 		}
 		else 
 		{
-			double interest = loan_amount * interestCalc;
+			double monthly_interest = loan_amount * interestCalc;
+			double actual_payment;
+			double principal;
 
-			if(loan_amount * (1 + interestCalc) < monthlypaid) 
-			{
-				monthly_payment = loan_amount * (1+ interestCalc);
+			if (loan_amount * (1.0 + interestCalc) < monthly_payment) {
+				actual_payment = loan_amount + monthly_interest;
 				principal = loan_amount;
-				
-			}else{
-				monthlypaid = monthly_payment;
-				principal = monthlypaid - interest;
+				loan_amount = 0.0;
+			} else {
+				actual_payment = monthly_payment;
+				principal = monthly_payment - monthly_interest;
+				loan_amount -= principal;
 			}
 
-			loan_amount = loan_amount - principal;
-			totalInterest = totalInterest + interest;
+			totalInterest += monthly_interest;
 
-
-			if(loan_amount < 0.005)
-				loan_amount = 0;
-
-			cout << currentMonth <<"\t" << loan_amount << "\t" << monthly_payment << "\t" << monthly_interest_rate << "\t" << (loan_amount * (1 + interestCalc)) << "\t" << (monthly_payment - (loan_amount * (1 + interestCalc)));
+			cout << currentMonth++ << "\t$" << loan_amount;
+			if (loan_amount < 1000) cout << "\t";
+			cout << "\t$" << actual_payment
+				<< "\t" << monthly_interest_rate
+				<< "\t$" << monthly_interest
+				<< "\t\t$" << principal << "\n";
 		}
 	}
 	
 	cout << "****************************************************\n";
-	cout<< " \nIt takes " << --currentMonth << " months to pay off "
-	<< "the loan.\n"
-	<< "Total interest paid is: $" << totalInterest;
-	cout << endl << endl;
+	cout<< " \nIt takes " << --currentMonth << " months to pay off the loan.\n"
+	<< "Total interest paid is: $" << totalInterest << endl << endl;
 	
-
-
-
-
-
-
-
-
-
-
-
 	return 0;
 }
