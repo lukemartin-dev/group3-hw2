@@ -50,20 +50,38 @@ int main( int argc, char * argv[] )
 	double monthly_interest_rate = yearly_interest_rate / 12;
 	double interestCalc = monthly_interest_rate /= 100;
 	int currentMonth = 0;
-
+	double prinicpal, monthlypaid;
+	double totalInterest = 0;
+	
 	//TABLE
 	cout << "****************************************************\n"
 	     << "\tAmortization Table\n"
 		 << "****************************************************\n"
 		 << "Month\tBalance\tPayment\tRate\tInterest\tPrincipal\n";
 	while (loan_amount > 0) {
-		if (== 0) {
+		if (currentMonth == 0) {
+			cout << currentMonth++ << "\t$" << loan_amount;
 
+		if (loan_amount < 1000) cout <<"\t";
+			cout << "\t" << "N/A\tN/A\tN/A\tN/A\tN/A\n";
 		}
+		else {
+			if(loan_amount * (1 + interestCalc) < monthlypaid) {
+				monthly_payment = loan_amount;
+				cout << currentMonth <<"\t" << loan_amount << "\t" << monthly_payment << "\t" << monthly_interest_rate << "\t" << (loan_amount * (1 + interestCalc)) << "\t" << (monthly_payment - (loan_amount * (1 + interestCalc)));
+			}
+			if(2*loan_amount * (1 + interestCalc) >= monthlypaid )
+				cout << currentMonth <<"\t" << loan_amount << "\t" << monthly_payment << "\t" << monthly_interest_rate << "\t" << (loan_amount * (1 + interestCalc)) << "\t" << (monthly_payment - (loan_amount * (1 + interestCalc)));
+		}
+		totalInterest += loan_amount + interestCalc;
 	}
 	
-
-
+	cout << "****************************************************\n";
+	cout<< " \nIt takes " << --currentMonth << " months to pay off "
+	<< "the loan.\n"
+	<< "Total interest paid is: $" << totalInterest;
+	cout << endl << endl;
+	
 
 
 
