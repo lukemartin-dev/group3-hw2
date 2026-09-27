@@ -47,7 +47,7 @@ int main( int argc, char * argv[] )
 
 
 	double monthly_interest_rate = yearly_interest_rate / 12;
-	double interestCalc = monthly_interest_rate /= 100;
+	double interestCalc = monthly_interest_rate / 100;
 
 	int currentMonth = 0;
 	double principal, monthlypaid;
@@ -56,7 +56,7 @@ int main( int argc, char * argv[] )
 
 	if(monthly_payment <= loan_amount * interestCalc)
 	{
-		cout << "Insufficient payment): "
+		cout << "(Insufficient payment): "
 			<< argv[1] << " " << argv[2] << " " << argv[3] << endl;
 		return -3;
  	}
