@@ -42,38 +42,64 @@ int main( int argc, char * argv[] )
 
 	loan_amount = arguments[0];
 	yearly_interest_rate = arguments[1];
-	monthly_payment = arguments[2];
-	cout << loan_amount << " " << yearly_interest_rate << " " << monthly_payment << endl;
+	monthly_payment = arguments[2]; 
 	
 
 
 	double monthly_interest_rate = yearly_interest_rate / 12;
 	double interestCalc = monthly_interest_rate /= 100;
+
 	int currentMonth = 0;
-	double prinicpal, monthlypaid;
+	double principal, monthlypaid;
 	double totalInterest = 0;
 	
-	//TABLE
+
+	if(monthly_payment <= loan_amount * interestCalc)
+	{
+		cout << "Insufficient payment): "
+			<< argv[1] << " " << argv[2] << " " << argv[3] << endl;
+		return -3;
+ 	}
+
+	
 	cout << "****************************************************\n"
 	     << "\tAmortization Table\n"
 		 << "****************************************************\n"
 		 << "Month\tBalance\tPayment\tRate\tInterest\tPrincipal\n";
+
 	while (loan_amount > 0) {
-		if (currentMonth == 0) {
+		if (currentMonth == 0) 
+		{
 			cout << currentMonth++ << "\t$" << loan_amount;
 
-		if (loan_amount < 1000) cout <<"\t";
+			if (loan_amount < 1000) 
+				cout <<"\t";
+
 			cout << "\t" << "N/A\tN/A\tN/A\tN/A\tN/A\n";
 		}
-		else {
-			if(loan_amount * (1 + interestCalc) < monthlypaid) {
-				monthly_payment = loan_amount;
-				cout << currentMonth <<"\t" << loan_amount << "\t" << monthly_payment << "\t" << monthly_interest_rate << "\t" << (loan_amount * (1 + interestCalc)) << "\t" << (monthly_payment - (loan_amount * (1 + interestCalc)));
+		else 
+		{
+			double interest = loan_amount * interestCalc;
+
+			if(loan_amount * (1 + interestCalc) < monthlypaid) 
+			{
+				monthly_payment = loan_amount * (1+ interestCalc);
+				principal = loan_amount;
+				
+			}else{
+				monthlypaid = monthly_payment;
+				principal = monthlypaid - interest;
 			}
-			if(2*loan_amount * (1 + interestCalc) >= monthlypaid )
-				cout << currentMonth <<"\t" << loan_amount << "\t" << monthly_payment << "\t" << monthly_interest_rate << "\t" << (loan_amount * (1 + interestCalc)) << "\t" << (monthly_payment - (loan_amount * (1 + interestCalc)));
+
+			loan_amount = loan_amount - principal;
+			totalInterest = totalInterest + interest;
+
+
+			if(loan_amount < 0.005)
+				loan_amount = 0;
+
+			cout << currentMonth <<"\t" << loan_amount << "\t" << monthly_payment << "\t" << monthly_interest_rate << "\t" << (loan_amount * (1 + interestCalc)) << "\t" << (monthly_payment - (loan_amount * (1 + interestCalc)));
 		}
-		totalInterest += loan_amount + interestCalc;
 	}
 	
 	cout << "****************************************************\n";
